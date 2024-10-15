@@ -14,7 +14,7 @@
         .modal {
             display: none; /* Скрываем по умолчанию */
             position: fixed;
-            z-index: 10;
+            z-index: 99;
             left: 0;
             top: 0;
             width: 100%;
@@ -24,12 +24,61 @@
             align-items: center;
         }
         .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 300px;
-            text-align: center;
-        }
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        width: 400px;
+        max-width: 100%;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+    }
+
+    button[type="submit"] {
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    .link {
+        display: block;
+        margin-top: 10px;
+        text-align: center;
+        color: #007bff;
+        cursor: pointer;
+    }
+
+    .link:hover {
+        text-decoration: underline;
+    }
         .modal-content h2 {
             margin-bottom: 20px;
         }
@@ -87,34 +136,63 @@
                     <li><a href="{% url 'contacts' %}">Контакты</a></li>
                 </ul>
             </nav>
+            
             {% if user.is_authenticated %}
-            <div class="cart">
-                <a href="{% url 'cart' %}" id="cart-btn">Корзина</a>
+            <div class='cart>'>
+                <a href="{% url 'cart' %}" id="cart-btn" class="btn_basket">Корзина</a>
             </div>
-                <form action="{% url 'logout' %}" method="post">
-                    {% csrf_token %}
+            <style>
+                .btn_basket{
+                    all: unset;
+                    text-decoration: none;
+                    color: inherit;
+                    padding: 8px;
+                    color: white;
+                    border-radius: 6px;
+                    background-color: rgb(255, 123, 0);
+                }
+                .btn_basket:hover{
+                    background-color: rgba(255, 106, 0, 0.458);
+                    color: rgba(255, 255, 255, 0.737);
+                }
+            </style>
+            <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
                 <button style="background-color:#333; border: none; cursor: pointer;" type="submit">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="white" viewBox="0 0 256 256">
-                      <path
+                        <path
                         d="M112,216a8,8,0,0,1-8,8H48a16,16,0,0,1-16-16V48A16,16,0,0,1,48,32h56a8,8,0,0,1,0,16H48V208h56A8,8,0,0,1,112,216Zm109.66-93.66-40-40a8,8,0,0,0-11.32,11.32L196.69,120H104a8,8,0,0,0,0,16h92.69l-26.35,26.34a8,8,0,0,0,11.32,11.32l40-40A8,8,0,0,0,221.66,122.34Z"
-                      ></path>
+                        ></path>
                     </svg>
                 </button>
-                </form>
+            </form>
             {% else %}
             <button id="login-btn">Войти</button>
             {% endif %}
+
         </div>
     </header>
 
-    <!-- Вход -->
     <div id="login-modal" class="modal" style="display: {% if login_modal_open %}flex{% else %}none{% endif %};">
         <div class="modal-content">
             <h2>Вход</h2>
             <p id="login-error" style="color: red;"></p> <!-- Вывод ошибок -->
             <form id="login-form">
                 {% csrf_token %}
-                {{ login_form.as_p }}
+                <div class="form-group">
+                    {{ login_form.username.label_tag }} <!-- Отображение label -->
+                    {{ login_form.username }}           <!-- Поле формы -->
+                    {% if login_form.username.errors %} <!-- Ошибки поля -->
+                        <span class="text-danger">{{ login_form.username.errors }}</span>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ login_form.password.label_tag }}
+                    {{ login_form.password }}
+                    {% if login_form.password.errors %}
+                        <span class="text-danger">{{ login_form.password.errors }}</span>
+                    {% endif %}
+                </div>
                 <button type="submit" name="login">Войти</button>
             </form>
             <span class="link" id="open-register">Нет аккаунта? Зарегистрируйтесь</span>
@@ -128,7 +206,34 @@
             <p id="register-error" style="color: red;"></p> <!-- Вывод ошибок -->
             <form id="register-form">
                 {% csrf_token %}
-                {{ register_form.as_p }}
+                <div class="form-group">
+                    {{ register_form.username.label_tag }}
+                    {{ register_form.username }}
+                    {% if register_form.username.errors %}
+                        <span class="text-danger">{{ register_form.username.errors }}</span>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ register_form.email.label_tag }}
+                    {{ register_form.email }}
+                    {% if register_form.email.errors %}
+                        <span class="text-danger">{{ register_form.email.errors }}</span>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ register_form.password1.label_tag }}
+                    {{ register_form.password1 }}
+                    {% if register_form.password1.errors %}
+                        <span class="text-danger">{{ register_form.password1.errors }}</span>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ register_form.password2.label_tag }}
+                    {{ register_form.password2 }}
+                    {% if register_form.password2.errors %}
+                        <span class="text-danger">{{ register_form.password2.errors }}</span>
+                    {% endif %}
+                </div>
                 <button type="submit" name="register">Зарегистрироваться</button>
             </form>
             <span class="link" id="open-login">Уже есть аккаунт? Войдите</span>
@@ -201,10 +306,10 @@
         const loginForm = document.getElementById('login-form');
         loginForm.addEventListener('submit', async function(event) {
             event.preventDefault();
-            
+
             const formData = new FormData(loginForm);
             const csrfToken = formData.get('csrfmiddlewaretoken');
-            
+
             const response = await fetch("{% url 'login' %}", {
                 method: 'POST',
                 body: formData,
@@ -212,24 +317,24 @@
                     'X-CSRFToken': csrfToken
                 }
             });
-    
+
             const result = await response.json();
-            
+
             if (response.ok) {
                 window.location.reload(); // Если вход успешен, перезагружаем страницу
             } else {
                 document.getElementById('login-error').innerText = result.error; // Вывод ошибок
             }
         });
-    
+
         // Асинхронная отправка формы регистрации
         const registerForm = document.getElementById('register-form');
         registerForm.addEventListener('submit', async function(event) {
             event.preventDefault();
-    
+
             const formData = new FormData(registerForm);
             const csrfToken = formData.get('csrfmiddlewaretoken');
-            
+
             const response = await fetch("{% url 'register' %}", {
                 method: 'POST',
                 body: formData,
@@ -237,16 +342,16 @@
                     'X-CSRFToken': csrfToken
                 }
             });
-    
+
             const result = await response.json();
-    
+
             if (response.ok) {
                 window.location.reload(); // Если регистрация успешна, перезагружаем страницу
             } else {
                 document.getElementById('register-error').innerText = result.error; // Вывод ошибок
             }
         });
-    
+
         const loginBtn = document.getElementById('login-btn');
         const loginModal = document.getElementById('login-modal');
         const openRegister = document.getElementById('open-register');
